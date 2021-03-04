@@ -45,14 +45,19 @@ class OGS(object):
             self.ogs_name = args["path"] + "/"
         else:
             self.ogs_name = ""
+        if "output" in args:
+            self.outdir = args["output"]
+        else:
+            self.outdir = ""
         if sys.platform == "win32":
             self.ogs_name = self.ogs_name + "ogs.exe"
         else:
             self.ogs_name = self.ogs_name + "ogs"
         if self.loadmkl is None:
-            cmd = self.ogs_name + " " + self.prjfile + " >out"
+            cmd = self.ogs_name + " " + self.prjfile + " -o " + self.outdir + " > {}/{}".format(self.outdir,self.prjfile.split('/')[-1].replace('prj','log'))
         else:
-            cmd = self.loadmkl + " && " + self.ogs_name + " " + self.prjfile + " >out"
+            cmd = self.loadmkl + " && " + self.ogs_name + " " + self.prjfile + " -o " + self.outdir + " > {}/{}".format(self.outdir,self.prjfile.split('/')[-1].replace('prj','log'))
+            
         returncode = subprocess.run([cmd], shell=True, executable="/bin/bash")
         if returncode.returncode == 0:
             print("OGS finished")
